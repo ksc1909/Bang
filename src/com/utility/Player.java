@@ -1,5 +1,11 @@
 package com.utility;
 
+import com.cards.Card;
+import com.enums.Hero;
+import com.enums.Life;
+import com.enums.Range;
+import com.enums.Role;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +27,7 @@ public class Player {
         playerCards = new ArrayList<>();
     }
     public void print(){
+        System.out.println("\n+++++++++ PLAYER ++++++++++");
         System.out.println("Player no: " + number + " Role: " +  role + " Hero: " + hero);
         System.out.println("========== CARDS ==========");
         for (int i = 0; i< playerCards.size(); i++)

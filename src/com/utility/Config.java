@@ -1,7 +1,11 @@
 package com.utility;
+import com.enums.Action;
+import com.enums.Hero;
+
 import java.util.*;
 
 public class Config {
+
     //Singleton
     private static Config config;
 
@@ -34,7 +38,6 @@ public class Config {
     private int maxNoOfPlayers = 7;
     private int maxNoOfCards = 80;
 
-
     private List<Tuple> cardMap = new ArrayList<>();
     private List<Hero> heroList = new ArrayList<>();
 
@@ -42,9 +45,8 @@ public class Config {
     public static Config getConfig() {
         if(config == null){
             config = new Config();
-            return config;
         }
-        else return config;
+        return config;
     }
 
     private Config() {
@@ -196,4 +198,5 @@ public class Config {
         Collections.shuffle(heroList);
         return heroList;
     }
+
 }
