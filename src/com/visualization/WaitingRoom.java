@@ -73,4 +73,8 @@ public class WaitingRoom extends JFrame{
     public JTextField getNicknameTextField() {
         return nicknameTextField;
     }
+
+    public JLabel getNickLabel() {
+        return nickLabel;
+    }
 }

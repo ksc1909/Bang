@@ -1,7 +1,9 @@
 package com.online;
 
-import com.exceptions.MaxConnReachedException;
+import com.enums.Event;
 import com.exceptions.ServerExistException;
+import com.game.Rules;
+import com.sun.org.apache.bcel.internal.generic.LUSHR;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
+    Rules rules;
     List<ServerHandler> players;
     ServerSocket serverSocket;
     Socket connection;
@@ -64,8 +67,10 @@ public class Server {
     public void setNumberOfDeclaredPlayers(int numberOfDeclaredPlayers) {
         this.numberOfDeclaredPlayers = numberOfDeclaredPlayers;
     }
-
-    public void start() throws MaxConnReachedException  {
+    public void setRules(){
+        rules = new Rules(players);
+    }
+    public void start() {
         System.out.println("Server is ON!");
         while (true){
             try {
@@ -83,8 +88,9 @@ public class Server {
                 else
                 {
                     System.out.println("Max number of players reached! number of connected players: " + connectedPlayers);
+                    ServerHandler handler = new ServerHandler(connection, this);
+                    handler.send(Event.MAX_PLAYERS_REACHED.toString());
                     connection.close();
-                    throw new MaxConnReachedException();
                 }
           } catch (IOException e) {
               e.printStackTrace();

@@ -1,8 +1,11 @@
 package com.online;
 import com.enums.Event;
+import com.enums.Hero;
 import com.enums.MessageDestination;
+import com.enums.Role;
 import com.game.Rules;
 import com.visualization.Menu;
+import com.visualization.Player;
 import com.visualization.WaitingRoom;
 import jdk.nashorn.internal.scripts.JO;
 
@@ -64,8 +67,46 @@ public class ClientHandler extends Thread{
         }
     }
     private void handleMessage(String message){
-        waitingRoom.getChatArea().append(message + "\n");
-        waitingRoom.getChatArea().setCaretPosition(waitingRoom.getChatArea().getDocument().getLength());
+        if(message.contains(Event.MAX_PLAYERS_REACHED.toString())) {
+            waitingRoom.setVisible(false);
+            JOptionPane.showMessageDialog(waitingRoom,"Max number of players reached. Disconnecting.");
+            waitingRoom.dispose();
+        }
+        else if (message.contains(Event.PLAYER_CONNECTED.toString())){
+            waitingRoom.getChatArea().append("Player connected!" + "\n");
+            waitingRoom.getChatArea().setCaretPosition(waitingRoom.getChatArea().getDocument().getLength());
+        }
+        else if(message.contains(Event.GAME_START.toString())){
+            waitingRoom.getChatArea().append("Game is starting!" + "\n");
+            //waitingRoom.dispose();
+            //new Player(waitingRoom.getNicknameTextField().toString());
+        }
+        else if ( message.contains(Event.PLAYER_INFO.toString())){
+            int playerNumber = Integer.valueOf(message.substring(20,21));
+            int spaceEndIndex = message.indexOf(" ", 27);
+            String role = message.substring(27, spaceEndIndex);
+            int spaceEndIndex2 = message.indexOf(" ", spaceEndIndex + 6);
+            spaceEndIndex +=6;
+            String hero = message.substring(spaceEndIndex, spaceEndIndex2);
+            com.utility.Player p = new com.utility.Player();
+
+            System.out.println("Number: " + playerNumber);
+            System.out.println("Index1: " + spaceEndIndex);
+            System.out.println("Index2: " + spaceEndIndex2);
+            p.number = playerNumber;
+            System.out.println("Role: " + role);
+            p.role = Role.valueOf(role);
+            System.out.println("Hero: " + hero);
+            p.hero = Hero.valueOf(hero);
+
+            System.out.println("Number " + p.number + " Role: " + p.role + " Hero " + p.hero);
+
+
+        }
+        else {
+            waitingRoom.getChatArea().append(message + "\n");
+            waitingRoom.getChatArea().setCaretPosition(waitingRoom.getChatArea().getDocument().getLength());
+        }
     }
     private void sendMessage(Event type, MessageDestination destination){
         switch (destination){
@@ -139,6 +180,7 @@ public class ClientHandler extends Thread{
                     if(nick.length() > 0 && nick.length() <=9 ) {
                         waitingRoom.setFieldsAfterNickname();
                         sendMessage(Event.PLAYER_NICK, MessageDestination.ALL_PLAYERS);
+                        waitingRoom.getNickLabel().setText("Your nick: ");
                     }
                     else
                         JOptionPane.showMessageDialog(null,"Type your nick (1-9 charackters");
@@ -156,5 +198,9 @@ public class ClientHandler extends Thread{
                 sendMessage(Event.PLAYER_EXIT, MessageDestination.ALL_PLAYERS);
             }
         });
+    }
+
+    public WaitingRoom getWaitingRoom() {
+        return waitingRoom;
     }
 }

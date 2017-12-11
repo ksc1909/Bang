@@ -6,4 +6,5 @@ public enum Role {
     Renegade,
     Killer,
     Deputy
+
 }

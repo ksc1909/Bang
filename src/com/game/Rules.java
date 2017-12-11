@@ -1,7 +1,10 @@
 package com.game;
 
+import com.enums.Event;
 import com.enums.Hero;
 import com.cards.*;
+import com.enums.Role;
+import com.online.ServerHandler;
 import com.utility.Config;
 import com.utility.Player;
 
@@ -12,45 +15,53 @@ public class Rules {
     private DeckOfPlayingCards deck;
     private DeckOfRoleCards roles;
 
-    private List<Player> players;
     private List<Hero> heroList = config.getHeroList();
+    private List<Card> cardList;
+    private List<Player> playerList;
 
-    private com.visualization.Player playerBox;
 
-    public Rules() {
-            playerBox = new com.visualization.Player();
-            int noOfPlayers = 6;
-            players  = new ArrayList<>();
+    public Rules(List<ServerHandler> players) {
+            int noOfPlayers = players.size();
             roles = new DeckOfRoleCards();
-
+            deck = new DeckOfPlayingCards();
+            playerList = new ArrayList<>();
 
             roles.createDeck(noOfPlayers);
             roles.shuffle();
 
-            deck = new DeckOfPlayingCards();
             deck.createDeck();
             deck.shuffle();
 
+            int playerNumber = 0, cardNumber = 0;
+            Role role;
+            Hero hero;
             Player p;
-            int x=0;
-            for(int i = 0; i < noOfPlayers; i++){
+            for(ServerHandler handler: players){
                 p = new Player();
-                p.number = i;
-                p.role = roles.getRoleList().get(i);
-                p.hero = heroList.get(i);
-                for(int j=0;j<5;j++,x++){
-                    p.playerCards.add(deck.getCardList().get(x));
-                  }
-                players.add(p);
+                cardList = new ArrayList<>();
+                role = roles.getRoleList().get(playerNumber);
+                hero = heroList.get(playerNumber);
+
+                for(int j=0;j<5;j++,cardNumber++){
+                    cardList.add(deck.getCardList().get(cardNumber));
+                }
+
+                p.number = playerNumber;
+                p.role = role;
+                p.hero = hero;
+                p.playerCards = cardList;
+
+                playerList.add(p);
+
+
+                handler.send(Event.PLAYER_INFO + ": " + Event.NUMBER + " " + playerNumber + " " +
+                                    Event.ROLE.toString() + " " + role + " " +
+                                    Event.HERO + " " + hero + " " + Event.CARDS + " " + cardList);
+                playerNumber++;
             }
 
-            playerBox.addCards(players.get(0).playerCards);
-            System.out.println("Add cards to panel successful");
-            playerBox.updateInfo(players.get(0).role, players.get(0).hero);
-            System.out.println("Update info successful");
-
             for(int i=0;i<noOfPlayers;i++){
-                players.get(i).print();
+                playerList.get(i).print();
             }
 
 

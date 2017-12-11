@@ -1,9 +1,12 @@
 package com.online;
 
 import com.enums.Event;
+import com.utility.Player;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ServerHandler extends Thread{
@@ -44,20 +47,23 @@ public class ServerHandler extends Thread{
                     server.sendToAll(nick + ": " + msg.substring(13));
                 }
                 else if (msg.contains(Event.PLAYER_READY.toString())){
+                    server.incrementReadyPlayers();
+
                     if (server.getReadyPlayers() == server.getNumberOfDeclaredPlayers())
                     {
-                        server.sendToAll("All players are ready. Starting the game!");
-                        server.startGame();
+                        System.out.println("All players ready!");
+                        server.sendToAll(Event.GAME_START.toString());
+                        server.setRules();
                     }
                     else if (server.getReadyPlayers() < server.getNumberOfDeclaredPlayers()){
                         System.out.println("Player is ready: " + nick );
-                        server.incrementReadyPlayers();
                         server.sendToAllNumberOfReadyPlayers();
                     }
                 }
                 else if (msg.contains(Event.PLAYER_NICK.toString())){
                     nick =  msg.substring(12);
-                    System.out.println("New Player connected, nick: " + nick);
+                    server.sendToAll("New player " + nick + " has connected!");
+                    System.out.println("Player set nick: " + nick);
                 }
                 else if (msg.contains(Event.PLAYER_EXIT.toString())){
                     System.out.println("Player " + nick + " has exited!");
@@ -67,7 +73,9 @@ public class ServerHandler extends Thread{
                     server.removePlayer(this);
                 }
 
+
             }
+
         }
     }
 }

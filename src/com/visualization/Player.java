@@ -21,11 +21,11 @@ public class Player extends JFrame implements ActionListener{
     private JLabel heroImgLabel;
 
     public Player() {
-        super("Player");
+        super("XD");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setSize(900,530);
-        this.setVisible(true);
+        //this.setVisible(true);
         //this.setResizable(true);
 
         this.add(mainpanel);

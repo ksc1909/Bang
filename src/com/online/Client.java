@@ -1,6 +1,5 @@
 package com.online;
 
-import com.exceptions.MaxConnReachedException;
 import com.visualization.Menu;
 
 import java.io.*;
@@ -25,4 +24,5 @@ public class Client {
             clientHandler = new ClientHandler(this,socket, menu);
             clientHandler.start();
     }
+
 }
